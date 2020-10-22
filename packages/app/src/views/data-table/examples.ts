@@ -1,5 +1,8 @@
 import standardHtml from '!!raw-loader!./standard.html';
 import selectionHtml from '!!raw-loader!./selection.html';
+import paginationHtml from '!!raw-loader!./pagination.html';
+import { autoinject } from 'aurelia-framework';
+import { MdcSnackbarService } from '@aurelia-mdc-web/snackbar';
 
 export interface MDCDataTableRowSelectionChangedEvent {
   index: number;
@@ -7,9 +10,14 @@ export interface MDCDataTableRowSelectionChangedEvent {
   selected: boolean;
 }
 
+@autoinject
 export class Examples {
+  constructor(private snackbarService: MdcSnackbarService) { }
+
   standardHtml = standardHtml;
   selectionHtml = selectionHtml;
+  paginationHtml = paginationHtml;
+  activePage = 1;
 
   desserts = [
     { checked: false, name: 'Frozen yogurt', calories: 159, carbs: 24, protein: 4, comment: 'Super tasty' },
@@ -20,6 +28,16 @@ export class Examples {
   selectionChangedEvent: MDCDataTableRowSelectionChangedEvent;
   onSelectionChanged(event: MDCDataTableRowSelectionChangedEvent): void {
     this.selectionChangedEvent = event;
+  }
+
+  handleNavigation(type: string) {
+    this.snackbarService.open(`navigation type: ${type}`);
+    switch (type) {
+      case 'first': this.activePage = 1; break;
+      case 'prev': this.activePage--; break;
+      case 'next': this.activePage++; break;
+      case 'last': this.activePage = 4; break;
+    }
   }
 
 }

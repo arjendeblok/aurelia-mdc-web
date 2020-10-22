@@ -7,6 +7,8 @@ import { PLATFORM } from 'aurelia-pal';
 
 let tabId = 0;
 
+MDCTabFoundation.strings.INTERACTED_EVENT = MDCTabFoundation.strings.INTERACTED_EVENT.toLowerCase();
+
 @inject(Element)
 @useView(PLATFORM.moduleName('./mdc-tab.html'))
 @customElement('mdc-tab')
@@ -31,6 +33,15 @@ export class MdcTab extends MdcComponent<MDCTabFoundation> {
 
   @bindable.booleanAttr
   minWidth: boolean;
+
+  @bindable.booleanAttr
+  fade: boolean;
+
+  @bindable.booleanAttr
+  stacked: boolean;
+
+  @bindable
+  indicatorIcon: string;
 
   handleClick_() {
     this.foundation?.handleClick();
@@ -99,6 +110,7 @@ export class MdcTab extends MdcComponent<MDCTabFoundation> {
 
 }
 
+/** @hidden */
 export interface IMdcTabElement extends HTMLElement {
   au: {
     controller: {

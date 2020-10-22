@@ -1,3 +1,230 @@
+# [v1.1.3](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/compare/v1.1.2...v1.1.3) (2020-10-15)
+
+
+### Bug Fixes
+
+* **checkbox:** check for null reference ([d3d9722](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/d3d97229e29df578c13b07b54549b3113314fbd3))
+* **layout-grid:** class name ([f7ddb44](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/f7ddb44aac2c99f0c75b216566603822d127671f))
+* **text-field:** prevent HMR crashes during development ([259fade](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/259fade2bcb7e345be98fde6871e5295ff0c48af))
+
+
+### Features
+
+* **data-table:** allow hoisting page select to body ([dd241a7](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/dd241a76e3774bef49007dc7dd8ae0bb217e033e))
+* **layout-grid:** allow setting all span attributes at once ([b6e36bd](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/b6e36bd3a18d8e37bb55b225be82b8b45c13b337))
+
+
+
+# [v1.1.2](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/compare/v1.1.1...v1.1.2) (2020-10-09)
+
+
+### Bug Fixes
+
+* **text-field:** add missing name, autocomplete, placeholder ([d9e7805](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/d9e78054771dabeb5462c465c522fcaa0a4fcec6))
+* **text-field:** do not set unused attributes ([8c098d8](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/8c098d8718a4cd9f60813ee655aa90d8508d7111))
+
+
+
+# [v1.1.1](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/compare/v1.1.0...v1.1.1) (2020-09-24)
+
+
+### Bug Fixes
+
+* **app:** data table pagination example ([70ff59f](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/70ff59fd7871890a622eea172cc5732b72b96314))
+* **chips:** typo ([084ded4](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/084ded4b8b04df37c77977cd7b16f392358401d2)), closes [#15](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/issues/15)
+
+
+### Features
+
+* **data-table:** update pagination based on active page ([0fe510b](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/0fe510b2b11d8150d2a29d3696541c78bd95433a))
+
+
+
+# [v1.1.0](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/compare/v1.0.5...v1.1.0) (2020-09-22)
+
+
+### Bug Fixes
+
+* **app:** make webpack job easier ([d48184c](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/d48184c92a44d1099e59dad8e9f9afb4d80ba71c))
+* **chips:** rename attribute and reverse its logic ([3112389](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/31123892785b989bbf275a259c82a6fe78393663))
+* **list:** remove duplicate attribute ([d3bebfe](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/d3bebfef54f1c1fc989ee75a90b0097c81b58d1e))
+
+### BREAKING CHANGES
+* `mdc-chip[removable]` has been renamed to `mdc-chip[non-removable]`
+* `mdc-list[action-data]` attribute has been removed in favour of `mdc-list[value]`
+
+
+# [v1.0.5](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/compare/v1.0.4...v1.0.5) (2020-09-16)
+
+
+### Bug Fixes
+
+* **drawer:** allow random header content ([8beb72b](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/8beb72b0e2c2ade124802356e14da8fe4760d658))
+* **drawer:** normalise events ([e62e444](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/e62e444e00beef183f303fc37545bc27b318930f))
+* **text-field:** use aurelia delegate for keyup event ([45c41ec](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/45c41ec1ac96beb6da49e8bc4aff8e0786f9743e))
+
+
+### Features
+
+* **text-field:** add blur-on-enter attribute ([948f5df](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/948f5df8b64c3b0533e2bcf11446a2a57a2367b4))
+
+
+
+# [v1.0.4](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/compare/v1.0.3...v1.0.4) (2020-09-14)
+
+
+### Bug Fixes
+
+* **app:** add explicit references ([549c0e0](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/549c0e068448990e0b82436ac438818c63db71bd))
+* **tabs:** make event lowercase ([303e506](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/303e506f6510e7eef5e9b8340730ca559a8b6d35))
+
+
+### Features
+
+* **dialog:** allow dialog customisation via the service ([adadae5](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/adadae5db4b58e6d48575e22d14d45648837d24b))
+
+
+
+# [v1.0.3](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/compare/v1.0.2...v1.0.3) (2020-09-11)
+
+
+### Bug Fixes
+
+* **app:** api doc clean up ([30b9fbd](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/30b9fbdcd9950937d67e3a13516284c28465a836))
+* **app:** handle complex doc types ([946f4f6](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/946f4f66f359fe457453c5ade47236a51eccf2e0))
+* **base:** make lint happy ([cbdae0c](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/cbdae0c0512ad2527ce6f00b144db7d00a490469))
+* **card:** add disable ripple ([c92c9e5](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/c92c9e57e53b21352f095ed15443205b7b53cd6b))
+* **data-table:** copy cell attributes ([362abb7](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/362abb79a870f1614eb9899523a56a4f225926ba))
+* **list:** do not update a disabled row checkbox ([6e7fa21](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/6e7fa21dcbeb56989893660f382c97503c287cd2))
+* **text-field:** do not ruin it for full width ([bb7d72f](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/bb7d72f3a8f80f6825cdfb3ca403f36627adbf03))
+
+
+### Features
+
+* **app:** display event docs ([a8af61c](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/a8af61c3c51f48a6a6b77a21ee2bfc6d027b19f6))
+
+
+
+# [v1.0.2](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/compare/v1.0.1...v1.0.2) (2020-09-05)
+
+
+### Bug Fixes
+
+* **all:** apply top bar styling later than icon button's ([041ab71](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/041ab710b20301456fe18750237908246896a76a))
+* **dialog:** add content only after the dialog has opened ([1fef2cc](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/1fef2cc682ea01d3b6f67e7b62335bdc9cac5c75))
+* **text-field:** workaround Safari alignment issue ([4339a94](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/4339a9447978ac382f0a676a3ff3fda05059ac20)), closes [#11](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/issues/11)
+
+
+
+# [v1.0.1](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/compare/v1.0.0...v1.0.1) (2020-09-01)
+
+
+### Features
+
+* **all:** add aggregate package ([03b185d](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/03b185d87dc31db368efb70d0629ae037ae7ff8d))
+* **base:** export material palette ([4c13377](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/4c13377e54cf5005276ff1b106a152a01336bb6a))
+
+
+
+# [v1.0.0](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/compare/v1.0.0-alpha.21...v1.0.0) (2020-08-31)
+
+
+### Bug Fixes
+
+* **app:** compose correct html ([899491e](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/899491e787e5ec8ef6e75b04a5676697aa8b683e))
+* **lookup:** check for undefined explicitly ([8e7c400](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/8e7c400c943ec13a0c5c3e1906418f3465127773))
+
+
+### Features
+
+* **app:** add lookup examples ([6f3f04b](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/6f3f04bda5c95f801a674e13ec5bd826db94cb19))
+* **app:** add tree view example snippet ([e89c088](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/e89c0884f0c99a3c2476fba3c2b58682cfd0d3d2))
+* **app:** add typography example snippets ([6df56a7](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/6df56a77b4af4479961ff1f8a4d99d6517e5378b))
+* **app:** data table pagination example ([d754b15](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/d754b1519804804a734554589e64cdc61161afe7))
+
+
+
+# [v1.0.0-alpha.21](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/compare/v1.0.0-alpha.20...v1.0.0-alpha.21) (2020-08-28)
+
+
+### Bug Fixes
+
+* **top-app-bar:** allow tweaking "fixed" attribute ([d51c891](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/d51c8913ee6ca35a08bd919907e70ea80064d939))
+* **top-app-bar:** expose scroll target ([3604181](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/36041815dbb087c299b33f09e18be733aafcc101))
+* **top-app-bar:** instantiate correct foundation ([d41f26d](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/d41f26de8336af45f5acb072d390eea16d0db8b3))
+
+
+### Features
+
+* **app:** add top app bar examples ([9db395c](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/9db395cf1a024f66d49da6fa085e1f3d8cfe93cf))
+
+
+
+# [v1.0.0-alpha.20](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/compare/v1.0.0-alpha.19...v1.0.0-alpha.20) (2020-08-27)
+
+
+### Bug Fixes
+
+* **icon:** store host reference ([bf8a007](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/bf8a007026e98ec93a3bc099331f58bffdcf423b))
+* **text-field:** add missing attributes ([87e24fe](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/87e24fe26ea89c27ea3d46d3bd092aeb6bd70e23))
+* **text-field:** emit on focus ([f2fbd51](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/f2fbd51802b9873fc6842075de118ccb98eb1c50))
+* **text-field:** propagate required to foundation ([c30f96b](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/c30f96bf6e539619898af3b167a43cd71355ecbb))
+
+
+### Features
+
+* **app:** add text field examples ([17e64d2](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/17e64d2dde04a0218c523ae2cd1d7925bc573da2))
+
+
+
+# [v1.0.0-alpha.19](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/compare/v1.0.0-alpha.18...v1.0.0-alpha.19) (2020-08-26)
+
+
+### Bug Fixes
+
+* **select:** do not use `child` to get the icon reference ([2e5af34](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/2e5af342982e6f6cdc95323be941354403756bf8))
+* **tab-bar:** add missing attributes ([f6badb5](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/f6badb5cb2fea8df70904662a8b9e4f5f5565431))
+
+
+### Features
+
+* **app:** add select examples ([be5a66b](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/be5a66ba129d106c3b4a9c68293cd1443f730dac))
+* **app:** add tab bar examples ([4bbd2a0](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/4bbd2a07bb66aa4a984923254deee8575053001a))
+* **app:** slider example snippets ([9d07b5e](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/9d07b5ee7b13b7c420ac11d1f74bb913b577b817))
+* **app:** switch examples ([e656b3d](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/e656b3d06657fc014f200cc043ac46782893a18a))
+
+
+
+# [v1.0.0-alpha.18](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/compare/v1.0.0-alpha.17...v1.0.0-alpha.18) (2020-08-23)
+
+
+### Features
+
+* **image-list:** add ([c2ecd6c](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/c2ecd6c4f9c060ee4ee3ea5950e3d874f5223328))
+* **snackbar:** add ([56ea99f](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/56ea99faffb9d77f10ef2e9d1c0abc8ad5235af1))
+
+
+
+# [v1.0.0-alpha.17](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/compare/v1.0.0-alpha.16...v1.0.0-alpha.17) (2020-08-21)
+
+
+### Bug Fixes
+
+* **lookup:** do not open on disabled or readonly inputs ([ab35d92](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/ab35d92b0489e67cab1d674ae762491517e42de9))
+* **select:** add anchor margin attribute ([807fb9d](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/807fb9d20d14199c006f609af5146b9ad35d28fe))
+* **select:** add disabled ([07b97cf](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/07b97cfe5990f08e4e53a0fa951fd2250d71ecef))
+* **select:** add missing attributes ([7b32ce7](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/7b32ce71b597f3d6130442e61e11d3a322cac3fe))
+* **select:** re-layout on attributes change ([171cd0d](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/171cd0db2662498ef7fa339c29dadef454ecc1ca))
+* **text-field:** propagate disabled to foundation ([7ace40d](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/7ace40d495c7230c2098bcd0cee6b05457c6c0e8))
+
+
+### Features
+
+* **app:** wip - select examples ([aff933e](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/aff933e45ef823019fc8a5bc1e79ade117ad1ce6))
+* **select:** expose selected index on an element ([c921ee6](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/c921ee6820f5c12e8e586b87bbadd943ecb8c5ad))
+* **text-field:** expose disabled and readonly on an element ([e2770b3](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/commit/e2770b3d9e89636e6db863be99195afeb0f9ea09))
+
+
 # [v1.0.0-alpha.16](https://github.com/aurelia-ui-toolkits/aurelia-mdc-web/compare/v1.0.0-alpha.15...v1.0.0-alpha.16) (2020-08-20)
 
 

@@ -12,6 +12,11 @@ export const mdcListStrings = {
   ITEMS_CHANGED: 'mdclist:itemschanged'
 };
 
+/**
+ * @selector mdc-list
+ * @emits mdclist:action | Indicates that a list item with the specified index has been activated
+ * @emits mdclist:itemschanged | Indicates that the list of items has changed
+ */
 @inject(Element)
 @useView(PLATFORM.moduleName('./mdc-list.html'))
 @customElement(cssClasses.ROOT)
@@ -19,12 +24,11 @@ export class MdcList extends MdcComponent<MDCListFoundation>{
 
   cssClasses = cssClasses;
 
+  /** Increases the height of the row to give it greater visual separation from adjacent rows */
   @bindable.booleanAttr
   twoLine: boolean;
 
-  @bindable
-  role: string;
-
+  /** When enabled, the space and enter keys (or click event) will trigger an single list item to become selected and any other previous selected element to become deselected */
   @bindable.booleanAttr
   singleSelection: boolean;
   async singleSelectionChanged() {
@@ -32,6 +36,7 @@ export class MdcList extends MdcComponent<MDCListFoundation>{
     this.foundation?.setSingleSelection(this.singleSelection);
   }
 
+  /** Sets the selection logic to apply/remove the mdc-list-item--activated class */
   @bindable.booleanAttr
   activated: boolean;
   async activatedChanged() {
@@ -39,27 +44,35 @@ export class MdcList extends MdcComponent<MDCListFoundation>{
     this.foundation?.setUseActivatedClass(this.activated);
   }
 
+  /** Sets the list to an orientation causing the keys used for navigation to change. true results in the Up/Down arrow keys being used. If false, the Left/Right arrow keys are used. */
   @bindable.booleanAttr
   vertical: boolean = true;
 
+  /** Increases the density of the list, making it appear more compact */
   @bindable.booleanAttr
   dense: boolean;
 
+  /** Optional, configures lists that start with text */
   @bindable.booleanAttr
   textual: boolean;
 
+  /** Configures the leading tiles of each row to display images instead of icons. This will make the graphics of the list items larger. */
   @bindable.booleanAttr
   avatar: boolean;
 
+  /** Optional, configures the leading tile of each row to display icons */
   @bindable.booleanAttr
   icon: boolean;
 
+  /** Optional, configures the leading tile of each row to display images */
   @bindable.booleanAttr
   image: boolean;
 
+  /** Optional, configures the leading tile of each row to display smaller images (this is analogous to an avatar list but the image will	not be rounded) */
   @bindable.booleanAttr
   thumbnail: boolean;
 
+  /** Optional, configures the leading tile of each row to display videos */
   @bindable.booleanAttr
   video: boolean;
 
@@ -76,9 +89,11 @@ export class MdcList extends MdcComponent<MDCListFoundation>{
     this.foundation?.setHasTypeahead(hasTypeahead);
   }
 
+  /** Prevent list items receive styles for hover, focus, and press states (including the ripple) */
   @bindable.booleanAttr
   nonInteractive: boolean;
 
+  /** Sets the list to allow the up arrow on the first element to focus the last element of the list and vice versa */
   @bindable.booleanAttr
   wrapFocus: boolean;
   async wrapFocusChanged() {
@@ -89,9 +104,6 @@ export class MdcList extends MdcComponent<MDCListFoundation>{
   initialSyncWithDOM() {
     this.layout();
     this.initializeListType();
-    if (this.role) {
-      this.root.setAttribute('role', this.role);
-    }
   }
 
   get listElements(): Element[] {
@@ -154,7 +166,7 @@ export class MdcList extends MdcComponent<MDCListFoundation>{
       notifyAction: (index) => {
         const listItem = this.listElements[index];
         if (!listItem.hasAttribute('no-list-action')) {
-          const data = (listItem as IMdcListItemElement).au.controller.viewModel.actionData;
+          const data = (listItem as IMdcListItemElement).au.controller.viewModel.value;
           this.emit<IMdcListActionEventDetail>(strings.ACTION_EVENT, { index, data }, /** shouldBubble */ true);
         }
       },
@@ -173,6 +185,9 @@ export class MdcList extends MdcComponent<MDCListFoundation>{
       setCheckedCheckboxOrRadioAtIndex: (index, isChecked) => {
         const listItem = this.listElements[index];
         const toggleEl = listItem.querySelector<HTMLInputElement>(strings.CHECKBOX_RADIO_SELECTOR);
+        if (toggleEl?.disabled) {
+          return;
+        }
         toggleEl!.checked = isChecked;
 
         const event = document.createEvent('Event');
@@ -190,6 +205,7 @@ export class MdcList extends MdcComponent<MDCListFoundation>{
   }
 
   /**
+   * @hidden
    * Used to figure out which list item this event is targetting. Or returns -1 if
    * there is no list item
    */
@@ -206,6 +222,7 @@ export class MdcList extends MdcComponent<MDCListFoundation>{
   }
 
   /**
+   * @hidden
    * Used to figure out which element was clicked before sending the event to the foundation.
    */
   handleFocusInEvent_(evt: FocusEvent) {
@@ -214,6 +231,7 @@ export class MdcList extends MdcComponent<MDCListFoundation>{
   }
 
   /**
+   * @hidden
    * Used to figure out which element was clicked before sending the event to the foundation.
    */
   handleFocusOutEvent_(evt: FocusEvent) {
@@ -222,6 +240,7 @@ export class MdcList extends MdcComponent<MDCListFoundation>{
   }
 
   /**
+   * @hidden
    * Used to figure out which element was focused when keydown event occurred before sending the event to the
    * foundation.
    */
@@ -235,6 +254,7 @@ export class MdcList extends MdcComponent<MDCListFoundation>{
   }
 
   /**
+   * @hidden
    * Used to figure out which element was clicked before sending the event to the foundation.
    */
   handleClickEvent_(evt: MouseEvent) {
@@ -247,6 +267,7 @@ export class MdcList extends MdcComponent<MDCListFoundation>{
   }
 
   /**
+   * @hidden
    * @return Whether typeahead is currently matching a user-specified prefix.
    */
   get typeaheadInProgress(): boolean {
@@ -254,6 +275,7 @@ export class MdcList extends MdcComponent<MDCListFoundation>{
   }
 
   /**
+   * @hidden
    * Given the next desired character from the user, adds it to the typeahead
    * buffer. Then, attempts to find the next option matching the buffer. Wraps
    * around if at the end of options.
@@ -293,6 +315,7 @@ export class MdcList extends MdcComponent<MDCListFoundation>{
   }
 
   /**
+   * @hidden
    * Initialize selectedIndex value based on pre-selected checkbox list items, single selection or radio.
    */
   initializeListType() {
@@ -308,6 +331,7 @@ export class MdcList extends MdcComponent<MDCListFoundation>{
   }
 }
 
+/** @hidden */
 export interface IMdcListElement extends HTMLElement {
   au: {
     controller: {

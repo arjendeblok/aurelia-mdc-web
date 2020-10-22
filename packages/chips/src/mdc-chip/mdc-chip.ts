@@ -19,6 +19,14 @@ MDCChipFoundation.strings.TRAILING_ICON_INTERACTION_EVENT = MDCChipFoundation.st
 
 let chipId = 0;
 
+/**
+ * @selector mdc-chip
+ * @emits mdcchip:interaction | Indicates the chip was interacted with (via click/tap or Enter key)
+ * @emits mdcchip:removal | Indicates the chip removal event from a chip set
+ * @emits mdcchip:selection | Indicates the chip's selection state has changed (for choice/filter chips)
+ * @emits mdcchip:navigation | Indicates a navigation event has occurred on a chip
+ * @emits mdcchip:trailingiconinteraction | Indicates the chip's trailing icon was interacted with (via click/tap or Enter key)
+ */
 @inject(Element)
 @useView(PLATFORM.moduleName('./mdc-chip.html'))
 @customElement('mdc-chip')
@@ -58,6 +66,7 @@ export class MdcChip extends MdcComponent<MDCChipFoundation> {
 
   id: string = `mdc-chip-${++chipId}`;
 
+  /** Set the component touch target to 48 x 48 px. */
   @bindable.booleanAttr
   touch: boolean;
 
@@ -67,63 +76,60 @@ export class MdcChip extends MdcComponent<MDCChipFoundation> {
   checkmark_?: MdcChipCheckmark;
   trailingAction_?: MdcChipTrailingAction;
 
+  /** Leading material icon ligature. */
   @bindable
   leadingIcon?: string;
 
+  /** Trailing material icon ligature. */
   @bindable
   trailingIcon?: string;
 
+  /** Trailing action material icon ligature. */
   @bindable
   trailingAction?: string;
 
+  /** Indicates the presence of a checkmark. */
   @bindable.booleanAttr
   checkmark?: boolean;
 
+  /** Data to pass with events. */
   @bindable
   data: unknown;
 
-  initialSelected?: boolean;
+  /** Sets whether a trailing icon click should not trigger exit/removal of the chip. (Default is false) */
+  @bindable.booleanAttr
+  nonRemovable: boolean;
+  async nonRemovableChanged() {
+    await this.initialised;
+    this.foundation?.setShouldRemoveOnTrailingIconClick(!this.nonRemovable);
+  }
+
+  /** Sets whether a click should trigger the primary action focus. */
+  @bindable.booleanAttr
+  focusPrimary: boolean;
+  async focusPrimaryChanged() {
+    await this.initialised;
+    this.foundation?.setShouldFocusPrimaryActionOnClick(this.focusPrimary);
+  }
+
+  selected_?: boolean;
   /**
- * @return Whether the chip is selected.
- */
+   * @return Whether the chip is selected.
+   */
   get selected(): boolean {
     if (this.foundation) {
       return this.foundation.isSelected();
     } else {
-      return this.initialSelected ?? false;
+      return this.selected_ ?? false;
     }
   }
 
-  /**
-   * Sets selected state on the chip.
-   */
+  /** Sets selected state on the chip. */
   set selected(selected: boolean) {
+    this.selected_ = selected;
     if (this.foundation) {
       this.foundation.setSelected(selected);
-    } else {
-      this.initialSelected = selected;
     }
-  }
-
-  /**
-   * @return Whether a trailing icon click should trigger exit/removal of the chip.
-   */
-  get shouldRemoveOnTrailingIconClick(): boolean {
-    return this.foundation?.getShouldRemoveOnTrailingIconClick() ?? false;
-  }
-
-  /**
-   * Sets whether a trailing icon click should trigger exit/removal of the chip.
-   */
-  set shouldRemoveOnTrailingIconClick(shouldRemove: boolean) {
-    this.foundation?.setShouldRemoveOnTrailingIconClick(shouldRemove);
-  }
-
-  /**
-   * Sets whether a clicking on the chip should focus the primary action.
-   */
-  set setShouldFocusPrimaryActionOnClick(shouldFocus: boolean) {
-    this.foundation?.setShouldFocusPrimaryActionOnClick(shouldFocus);
   }
 
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -136,11 +142,12 @@ export class MdcChip extends MdcComponent<MDCChipFoundation> {
   }
 
   initialSyncWithDOM() {
-    if (this.initialSelected !== undefined) {
-      this.selected = this.initialSelected;
+    if (this.selected_ !== undefined) {
+      this.selected = this.selected_;
     }
   }
 
+  /** Set focus to the chip. */
   focus() {
     this.root.focus();
   }
@@ -157,16 +164,21 @@ export class MdcChip extends MdcComponent<MDCChipFoundation> {
       eventTargetHasClass: (target: EventTarget | null, className: string) =>
         (target && (target as Element).classList) ? (target as Element).classList.contains(className) : false,
       getAttribute: (attr: string) => this.root.getAttribute(attr),
-      notifyInteraction: () => this.emit<MDCChipInteractionEventDetail>(MDCChipFoundation.strings.INTERACTION_EVENT, { chipId: this.id }, true /* bubble */),
+      notifyInteraction: () => this.emit<MDCChipInteractionEventDetail & { data: unknown }>(MDCChipFoundation.strings.INTERACTION_EVENT, {
+        chipId: this.id,
+        data: this.data
+      }, true /* bubble */),
       notifySelection: (selected: boolean, chipSetShouldIgnore: boolean) =>
-        this.emit<MDCChipSelectionEventDetail>(MDCChipFoundation.strings.SELECTION_EVENT, {
+        this.emit<MDCChipSelectionEventDetail & { data: unknown }>(MDCChipFoundation.strings.SELECTION_EVENT, {
           chipId: this.id,
+          data: this.data,
           selected: selected,
           shouldIgnore: chipSetShouldIgnore
         }, true),
       notifyTrailingIconInteraction: () =>
-        this.emit<MDCChipInteractionEventDetail>(MDCChipFoundation.strings.TRAILING_ICON_INTERACTION_EVENT, {
-          chipId: this.id
+        this.emit<MDCChipInteractionEventDetail & { data: unknown }>(MDCChipFoundation.strings.TRAILING_ICON_INTERACTION_EVENT, {
+          chipId: this.id,
+          data: this.data
         }, true),
       notifyRemoval: (removedAnnouncement) =>
         this.emit<MDCChipRemovalEventDetail & { data: unknown }>(MDCChipFoundation.strings.REMOVAL_EVENT, {
@@ -175,18 +187,21 @@ export class MdcChip extends MdcComponent<MDCChipFoundation> {
           removedAnnouncement: removedAnnouncement
         }, true),
       notifyNavigation: (key: string, source: EventSource) =>
-        this.emit<MDCChipNavigationEventDetail>(MDCChipFoundation.strings.NAVIGATION_EVENT, {
+        this.emit<MDCChipNavigationEventDetail & { data: unknown }>(MDCChipFoundation.strings.NAVIGATION_EVENT, {
           chipId: this.id,
+          data: this.data,
           key: key,
           source: source
         }, true),
       notifyEditStart: () =>
-        this.emit<MDCChipInteractionEventDetail>(MDCChipFoundation.strings.INTERACTION_EVENT, {
-          chipId: this.id
+        this.emit<MDCChipInteractionEventDetail & { data: unknown }>(MDCChipFoundation.strings.INTERACTION_EVENT, {
+          chipId: this.id,
+          data: this.data
         }, true),
       notifyEditFinish: () =>
-        this.emit<MDCChipInteractionEventDetail>(MDCChipFoundation.strings.INTERACTION_EVENT, {
-          chipId: this.id
+        this.emit<MDCChipInteractionEventDetail & { data: unknown }>(MDCChipFoundation.strings.INTERACTION_EVENT, {
+          chipId: this.id,
+          data: this.data
         }, true),
       getComputedStyleValue: (propertyName: string) => window.getComputedStyle(this.root).getPropertyValue(propertyName),
       setStyleProperty: (propertyName: string, value: string) => this.root.style.setProperty(propertyName, value),
@@ -251,11 +266,13 @@ export class MdcChip extends MdcComponent<MDCChipFoundation> {
     this.foundation?.focusTrailingAction();
   }
 
+  /** Remove focus from the chip. */
   removeFocus() {
     this.foundation?.removeFocus();
   }
 }
 
+/** @hidden */
 export interface IMdcChipElement extends HTMLElement {
   au: {
     controller: {

@@ -223,6 +223,24 @@ export const templates: { [x: string]: IComponentTemplate } = {
     sass: `@use '@material/icon-button/mdc-icon-button';
 @use '@material/icon-button/_index' as icon-button;`
   },
+  'image-list': {
+    title: 'Image List',
+    description: 'MDC Image List provides a RTL-aware Material Design image list component. An Image List consists of several items, each containing an image and optionally supporting content (i.e. a text label).',
+    references: [{
+      name: 'Material Design guidelines: Image Lists',
+      url: 'https://material.io/design/components/image-lists.html'
+    }, {
+      name: 'Material Components Web',
+      url: 'https://github.com/material-components/material-components-web/blob/master/packages/mdc-image-list/README.md'
+    }],
+    mdcUrls: [
+      { name: 'Sass Mixins', url: 'https://github.com/material-components/material-components-web/blob/master/packages/mdc-image-list/README.md#sass-mixins' },
+    ],
+    code: 'aurelia.use.plugin(PLATFORM.moduleName(\'@aurelia-mdc-web/image-list\'))',
+    sass: `@use '@material/image-list/mdc-image-list';
+@use '@material/image-list';
+@use '@aurelia-mdc-web/image-list';`
+  },
   'layout-grid': {
     title: 'Layout Grids',
     description: 'Material design’s responsive UI is based on a column-variate grid layout.',
@@ -276,7 +294,7 @@ export const templates: { [x: string]: IComponentTemplate } = {
   },
   'lookup': {
     title: 'Lookup',
-    description: '???',
+    description: 'The lookup is a normal text input enhanced by a panel of suggested options.',
     references: [{
       name: 'Material Design guidelines: Menus',
       url: 'https://material.io/design/components/menus.html'
@@ -400,6 +418,23 @@ export const templates: { [x: string]: IComponentTemplate } = {
     sass: `@use '@material/slider/mdc-slider';
 @use '@material/slider';`
   },
+  'snackbar': {
+    title: 'Snackbars',
+    description: 'Snackbars provide brief messages about app processes at the bottom of the screen.',
+    references: [{
+      name: 'Material Design guidelines: Snackbars',
+      url: 'https://material.io/design/components/snackbars.html'
+    }, {
+      name: 'Material Components Web',
+      url: 'https://github.com/material-components/material-components-web/blob/master/packages/mdc-snackbar/README.md'
+    }],
+    mdcUrls: [
+      { name: 'Sass Mixins', url: 'https://github.com/material-components/material-components-web/blob/master/packages/mdc-snackbar/README.md#sass-mixins' },
+    ],
+    code: 'aurelia.use.plugin(PLATFORM.moduleName(\'@aurelia-mdc-web/snackbar\'))',
+    sass: `@use '@material/snackbar/mdc-snackbar';
+@use '@material/snackbar';`
+  },
   'switch': {
     title: 'Switches',
     description: 'Buttons allow users to take actions, and make choices, with a single tap.',
@@ -494,7 +529,7 @@ export const templates: { [x: string]: IComponentTemplate } = {
   },
   'tree-view': {
     title: 'Tree View',
-    description: '???',
+    description: 'The tree view provides a Material Design styled tree that can be used to display hierarchy data.',
     references: [],
     mdcUrls: [],
     code: 'aurelia.use.plugin(PLATFORM.moduleName(\'@aurelia-mdc-web/tree-view\'));',

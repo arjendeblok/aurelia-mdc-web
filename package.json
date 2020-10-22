@@ -9,7 +9,7 @@
     "build": "lerna run build",
     "start": "cd packages/app && npm start",
     "_predoc": "cross-env rimraf doc/api.json && rimraf dist/doc-temp && tsc --project tsconfig.json --outFile dist/doc-temp/aurelia-ux.js && node doc/shape-defs && copyfiles tsconfig.json dist/doc-temp",
-    "_doc": "cross-env typedoc --json doc/api.json --excludeExternals --includeDeclarations --mode modules --target ES6 --name aurelia-ux-docs dist/doc-temp/",
+    "doc": "lerna run doc",
     "_postdoc": "cross-env node doc/shape-doc && rimraf dist/doc-temp",
     "changelog": "cross-env conventional-changelog -p angular -i docs/CHANGELOG.md -s",
     "_bump-version": "npm --no-git-tag-version version",
@@ -25,6 +25,7 @@
     "@material/chips": "^7.0.0",
     "@material/circular-progress": "^7.0.0",
     "@material/data-table": "^7.0.0",
+    "@material/density": "^7.0.0",
     "@material/dialog": "^7.0.0",
     "@material/drawer": "^7.0.0",
     "@material/elevation": "^7.0.0",
@@ -44,6 +45,7 @@
     "@material/ripple": "^7.0.0",
     "@material/select": "^7.0.0",
     "@material/slider": "^7.0.0",
+    "@material/snackbar": "^7.0.0",
     "@material/switch": "^7.0.0",
     "@material/tab": "^7.0.0",
     "@material/tab-bar": "^7.0.0",
@@ -92,9 +94,11 @@
     "rimraf": "^3.0.2",
     "sass": "^1.26.10",
     "sass-loader": "^9.0.0",
+    "selfsigned": "^1.10.8",
     "style-loader": "^1.0.0",
     "ts-loader": "^6.2.1",
     "tslib": "^1.13.0",
+    "typedoc": "^0.19.1",
     "typescript": "^3.9.5",
     "url-loader": "^4.1.0",
     "webpack": "^4.43.0",
@@ -102,7 +106,5 @@
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.0"
   },
-  "dependencies": {
-    "@material/density": "^7.0.0"
-  }
+  "dependencies": {}
 }

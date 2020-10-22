@@ -6,7 +6,7 @@ import {
 } from '@material/data-table';
 import { MdcCheckbox, IMdcCheckboxElement } from '@aurelia-mdc-web/checkbox';
 import { closest } from '@material/dom/ponyfill';
-import { inject, customElement, useView, PLATFORM, processContent, ViewCompiler, ViewResources, bindingMode } from 'aurelia-framework';
+import { inject, customElement, useView, PLATFORM, ViewCompiler, ViewResources, bindingMode, computedFrom, processContent } from 'aurelia-framework';
 import { bindable } from 'aurelia-typed-observable-plugin';
 
 declare module '@material/data-table' {
@@ -20,6 +20,10 @@ events.SELECTED_ALL = events.SELECTED_ALL.toLowerCase();
 events.UNSELECTED_ALL = events.UNSELECTED_ALL.toLowerCase();
 const NAVIGATION_EVENT = 'mdcdatatable:navigation';
 
+/**
+ * Use `pagination-total` replaceable part to customise pagination total label.
+ * @selector mdc-data-table
+ */
 @inject(Element)
 @useView(PLATFORM.moduleName('./mdc-data-table.html'))
 @customElement('mdc-data-table')
@@ -39,6 +43,9 @@ export class MdcDataTable extends MdcComponent<MDCDataTableFoundation> implement
     const headerCells = element.querySelectorAll<HTMLElement>('mdc-data-table-header>mdc-data-table-header-cell') ?? [];
     for (const c of Array.from(headerCells)) {
       const th = document.createElement('th');
+      for (let i = 0; i < c.attributes.length; ++i) {
+        th.setAttribute(c.attributes[i].name, c.attributes[i].value);
+      }
       th.classList.add('mdc-data-table__header-cell', ...Array.from(c.classList));
       th.classList.toggle('mdc-data-table__header-cell--numeric', c.hasAttribute('numeric'));
       th.setAttribute('role', 'columnheader');
@@ -58,14 +65,14 @@ export class MdcDataTable extends MdcComponent<MDCDataTableFoundation> implement
         tr.setAttribute(r.attributes[i].name, r.attributes[i].value);
       }
       tr.classList.add('mdc-data-table__row');
-      if (r.hasAttribute('repeat.for')) {
-        tr.setAttribute('repeat.for', r.getAttribute('repeat.for')!);
-      }
       tbody.appendChild(tr);
       const cells = r.querySelectorAll<HTMLElement>('mdc-data-table-cell');
       for (const c of Array.from(cells)) {
         const isHeader = c.hasAttribute('header');
         const cell = document.createElement(isHeader ? 'th' : 'td');
+        for (let i = 0; i < c.attributes.length; ++i) {
+          cell.setAttribute(c.attributes[i].name, c.attributes[i].value);
+        }
         cell.classList.add('mdc-data-table__cell', ...Array.from(c.classList));
         cell.classList.toggle('mdc-data-table__cell--numeric', c.hasAttribute('numeric'));
         if (isHeader) {
@@ -76,32 +83,64 @@ export class MdcDataTable extends MdcComponent<MDCDataTableFoundation> implement
       }
     }
 
+    const paginationTotal = element.querySelector<HTMLElement>('[replace-part="pagination-total"]');
     element.innerHTML = '';
     element.appendChild(table);
+    if (paginationTotal) {
+      element.appendChild(paginationTotal);
+    }
     return true;
   }
 
   header: HTMLElement;
   content: HTMLElement;
 
+  /** Shows pagination footer */
   @bindable.booleanAttr
   pagination: boolean;
 
+  /** Caption for the page size selector */
   @bindable
   rowsPerPageLabel: string = 'Rows per page';
 
+  /** Page sizes available for selection, e.g. [10, 25, 100, 'All'] */
   @bindable
   pageSizes: unknown[] = [10, 25, 100];
 
+  /** Selected page size */
   @bindable({ defaultBindingMode: bindingMode.twoWay })
   pageSize: unknown = 10;
 
-  @bindable
-  paginationTotal: string;
+  @computedFrom('pageSize', 'recordsCount', 'activePage')
+  get paginationPosition(): 'first' | 'between' | 'last' | undefined {
+    if (typeof this.pageSize !== 'number' || this.pageSize === undefined || isNaN(this.activePage) || isNaN(this.recordsCount)) {
+      return undefined;
+    }
+    const pagesCount = Math.ceil(this.recordsCount / this.pageSize);
+    return this.activePage === 1
+      ? (pagesCount === 1 ? undefined : 'first')
+      : (this.activePage === pagesCount ? 'last' : 'between');
+  }
 
-  @bindable
-  paginationPosition?: 'first' | 'between' | 'last' = 'first';
+  /** Sets total number of records. Used in navigation row. */
+  @bindable.number
+  recordsCount: number;
 
+  /** Sets the active page number. Used in navigation row. */
+  @bindable.number
+  activePage: number;
+
+  @computedFrom('pageSize', 'recordsCount', 'activePage')
+  get paginationTotal(): string | undefined {
+    if (typeof this.pageSize !== 'number' || this.pageSize === undefined || isNaN(this.activePage) || isNaN(this.recordsCount)) {
+      return undefined;
+    }
+    const firstRecord = this.pageSize * (this.activePage - 1) + 1;
+    const lastRecord = Math.min(this.pageSize * this.activePage, this.recordsCount);
+    return `${firstRecord}-${lastRecord} of ${this.recordsCount}`;
+  }
+
+  /** Turns on a linear progress indicator at the top of the table */
   @bindable.booleanAttr
   busy: boolean;
   async busyChanged() {
@@ -112,6 +151,9 @@ export class MdcDataTable extends MdcComponent<MDCDataTableFoundation> implement
       this.foundation?.hideProgress();
     }
   }
+
+  @bindable.booleanAttr
+  hoistPageSelectToBody: boolean;
 
   get rowCheckboxList(): MdcCheckbox[] {
     return Array.from(this.root.querySelectorAll<IMdcCheckboxElement>('.mdc-data-table__row .mdc-checkbox'))
@@ -387,5 +429,4 @@ export class MdcDataTable extends MdcComponent<MDCDataTableFoundation> implement
         return '';
     }
   }
-
 }

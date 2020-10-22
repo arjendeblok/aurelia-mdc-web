@@ -1,6 +1,6 @@
 import { MdcComponent } from '@aurelia-mdc-web/base';
 import { cssClasses, MDCSelectFoundationMap, MDCSelectEventDetail, strings } from '@material/select';
-import { inject, useView, customElement, child, processContent, ViewCompiler, ViewResources, children, bindingMode } from 'aurelia-framework';
+import { inject, useView, customElement, processContent, ViewCompiler, ViewResources, children, bindingMode, TaskQueue } from 'aurelia-framework';
 import { PLATFORM } from 'aurelia-pal';
 import { MdcSelectIcon, IMdcSelectIconElement, mdcIconStrings } from './mdc-select-icon';
 import { MdcSelectHelperText, mdcHelperTextCssClasses, IMdcSelectHelperTextElement } from './mdc-select-helper-text/mdc-select-helper-text';
@@ -11,14 +11,15 @@ import { MdcMenu } from '@aurelia-mdc-web/menu';
 import { MDCMenuItemEvent, Corner } from '@material/menu';
 import { bindable } from 'aurelia-typed-observable-plugin';
 import { MdcListItem, IMdcListItemElement } from '@aurelia-mdc-web/list';
-import { MDCSelectFoundationAurelia } from './mdc-select-fundation-aurelia';
+import { MDCSelectFoundationAurelia } from './mdc-select-foundation-aurelia';
 import { MDCSelectAdapterAurelia } from './mdc-select-adapter-aurelia';
+import { MDCMenuDistance } from '@material/menu-surface';
 
 strings.CHANGE_EVENT = strings.CHANGE_EVENT.toLowerCase();
 
 let selectId = 0;
 
-@inject(Element)
+@inject(Element, TaskQueue)
 @useView(PLATFORM.moduleName('./mdc-select.html'))
 @customElement(cssClasses.ROOT)
 @processContent(MdcSelect.processContent)
@@ -31,7 +32,7 @@ export class MdcSelect extends MdcComponent<MDCSelectFoundationAurelia>{
     return true;
   }
 
-  constructor(root: HTMLElement) {
+  constructor(root: HTMLElement, private taskQueue: TaskQueue) {
     super(root);
     defineMdcSelectElementApis(this.root);
   }
@@ -43,9 +44,6 @@ export class MdcSelect extends MdcComponent<MDCSelectFoundationAurelia>{
 
   private menuElement: Element;
 
-  @child(`[${mdcIconStrings.ATTRIBUTE}]`)
-  leadingIconEl: IMdcSelectIconElement;
-
   @children('mdc-list-items')
   items: MdcListItem;
 
@@ -55,6 +53,7 @@ export class MdcSelect extends MdcComponent<MDCSelectFoundationAurelia>{
   private lineRipple?: MdcLineRipple;
   private mdcLabel: MdcFloatingLabel;
   private outline?: MDCNotchedOutline;
+  // private mutationObserver: MutationObserver;
   errors = new Map<unknown, boolean>();
 
   @bindable
@@ -62,6 +61,9 @@ export class MdcSelect extends MdcComponent<MDCSelectFoundationAurelia>{
 
   @bindable.booleanAttr
   outlined: boolean;
+  outlinedChanged() {
+    this.taskQueue.queueTask(() => this.foundation?.layout());
+  }
 
   @bindable.booleanAttr
   required: boolean;
@@ -72,10 +74,22 @@ export class MdcSelect extends MdcComponent<MDCSelectFoundationAurelia>{
     } else {
       this.selectAnchor.removeAttribute('aria-required');
     }
+    this.foundation?.setRequired(this.required);
+    this.taskQueue.queueTask(() => this.foundation?.layout());
+  }
+
+  @bindable.booleanAttr
+  disabled: boolean;
+  async disabledChanged() {
+    await this.initialised;
+    this.foundation?.setDisabled(this.disabled);
   }
 
   @bindable.booleanAttr({ defaultBindingMode: bindingMode.oneTime })
   hoistToBody: boolean;
+
+  @bindable
+  anchorMargin: Partial<MDCMenuDistance>;
 
   private initialValue: unknown;
   get value(): unknown {
@@ -122,12 +136,26 @@ export class MdcSelect extends MdcComponent<MDCSelectFoundationAurelia>{
   }
 
   async initialise() {
-    this.leadingIcon = this.leadingIconEl?.au['mdc-select-icon'].viewModel;
+    const leadingIconEl = this.root.querySelector<IMdcSelectIconElement>(`[${mdcIconStrings.ATTRIBUTE}]`);
+    this.leadingIcon = leadingIconEl?.au['mdc-select-icon'].viewModel;
     const nextSibling = this.root.nextElementSibling;
     if (nextSibling?.tagName === mdcHelperTextCssClasses.ROOT.toUpperCase()) {
       this.helperText = (nextSibling as IMdcSelectHelperTextElement).au.controller.viewModel;
     }
     await Promise.all([this.helperText?.initialised, this.menu.initialised].filter(x => x));
+    // TODO: leave it here for now
+    // this.mutationObserver = DOM.createMutationObserver((mutations: MutationRecord[]) => {
+    //   console.log(mutations);
+    //   this.foundation?.setValue(this.value, true);
+    // });
+    // this.mutationObserver.observe(this.menuElement, {attributes: true, childList: true, characterData: true, subtree: true });
+  }
+
+  destroy() {
+    // if (this.mutationObserver) {
+    //   this.mutationObserver.disconnect();
+    //   this.mutationObserver.takeRecords();
+    // }
   }
 
   initialSyncWithDOM() {
@@ -324,6 +352,7 @@ export class MdcSelect extends MdcComponent<MDCSelectFoundationAurelia>{
   }
 }
 
+/** @hidden */
 export interface IMdcSelectElement extends HTMLElement {
   au: {
     controller: {
@@ -343,6 +372,15 @@ function defineMdcSelectElementApis(element: HTMLElement) {
         // aurelia binding converts "undefined" and "null" into empty string
         // this does not translate well into "empty" menu items when several selects are bound to the same field
         this.au.controller.viewModel.value = value === '' ? undefined : value;
+      },
+      configurable: true
+    },
+    selectedIndex: {
+      get(this: IMdcSelectElement) {
+        return this.au.controller.viewModel.selectedIndex;
+      },
+      set(this: IMdcSelectElement, value: number) {
+        this.au.controller.viewModel.selectedIndex = value;
       },
       configurable: true
     },

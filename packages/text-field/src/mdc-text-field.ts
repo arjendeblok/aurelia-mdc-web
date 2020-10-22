@@ -51,6 +51,15 @@ export class MdcTextField extends MdcComponent<MDCTextFieldFoundation> {
   textarea: boolean;
 
   @bindable.booleanAttr
+  endAligned: boolean;
+
+  @bindable.booleanAttr
+  ltrText: boolean;
+
+  @bindable.booleanAttr
+  fullwidth: boolean;
+
+  @bindable.booleanAttr
   outlined: boolean;
 
   @bindable
@@ -61,14 +70,18 @@ export class MdcTextField extends MdcComponent<MDCTextFieldFoundation> {
 
   @bindable.booleanAttr
   required: boolean;
-  requiredChanged() {
+  async requiredChanged() {
+    await this.initialised;
     this.input_.required = this.required;
+    this.foundation!.setUseNativeValidation(true);
   }
 
   @bindable.booleanAttr
   disabled: boolean;
-  disabledChanged() {
+  async disabledChanged() {
     this.input_.disabled = this.disabled;
+    await this.initialised;
+    this.foundation?.setDisabled(this.disabled);
   }
 
   @bindable.booleanAttr
@@ -76,6 +89,10 @@ export class MdcTextField extends MdcComponent<MDCTextFieldFoundation> {
   readonlyChanged() {
     this.input_.readOnly = this.readonly;
   }
+
+  /** Makes the element blur on Enter key press */
+  @bindable.booleanAttr
+  blurOnEnter: boolean;
 
   @bindable
   maxlength: string;
@@ -110,34 +127,77 @@ export class MdcTextField extends MdcComponent<MDCTextFieldFoundation> {
   @bindable
   max: string;
   maxChanged() {
-    this.input_.max = this.max;
+    if (this.max === undefined) {
+      this.input_.removeAttribute('max');
+    } else {
+      this.input_.max = this.max;
+    }
   }
 
   @bindable
   min: string;
   minChanged() {
-    this.input_.min = this.min;
+    if (this.min === undefined) {
+      this.input_.removeAttribute('min');
+    } else {
+      this.input_.min = this.min;
+    }
   }
 
   @bindable
   step: string;
   stepChanged() {
-    this.input_.step = this.step;
+    if (this.step === undefined) {
+      this.input_.removeAttribute('step');
+    } else {
+      this.input_.step = this.step;
+    }
+  }
+
+  @bindable
+  autocomplete: string;
+  autocompleteChanged() {
+    if (this.autocomplete === undefined) {
+      this.input_.removeAttribute('autocomplete');
+    } else {
+      this.input_.autocomplete = this.autocomplete;
+    }
   }
 
   @bindable.number
   tabindex: number;
   tabindexChanged() {
-    this.input_.tabIndex = this.tabindex;
+    if (isNaN(this.tabindex)) {
+      this.input_.removeAttribute('tabindex');
+    } else {
+      this.input_.tabIndex = this.tabindex;
+    }
   }
 
   @bindable
   type: string;
   typeChanged() {
     if (!this.textarea) {
-      this.input_.type = this.type;
+      if (this.type === undefined) {
+        this.input_.removeAttribute('type');
+      } else {
+        this.input_.type = this.type;
+      }
     }
   }
+
+  @bindable
+  name: string;
+  nameChanged() {
+    if (this.name === undefined) {
+      this.input_.removeAttribute('name');
+    } else {
+      this.input_.name = this.name;
+    }
+  }
+
+  @bindable
+  placeholder: string = ' '; // non empty placeholder solves the issue of misplaced labels in Safari
 
   private initialValue: string;
   get value(): string {
@@ -200,7 +260,7 @@ export class MdcTextField extends MdcComponent<MDCTextFieldFoundation> {
 
   @child(`[${mdcIconStrings.ATTRIBUTE}][${mdcIconStrings.TRAILING}]`)
   trailingIconEl: IMdcTextFieldIconElement | MdcComponent<MDCFoundation>;
-  trailingIconElChanged(){
+  trailingIconElChanged() {
     if (this.trailingIconEl) {
       const el = ((this.trailingIconEl as MdcComponent<MDCFoundation>).root ?? this.trailingIconEl) as IMdcTextFieldIconElement;
       this.trailingIcon_ = el.au['mdc-text-field-icon'].viewModel;
@@ -223,6 +283,8 @@ export class MdcTextField extends MdcComponent<MDCTextFieldFoundation> {
     this.maxChanged();
     this.stepChanged();
     this.typeChanged();
+    this.autocompleteChanged();
+    this.nameChanged();
     // handle the case when attribute value was set, not bound, in html
     if (this.root.hasAttribute('value')) {
       this.value = this.root.getAttribute('value') ?? '';
@@ -284,7 +346,7 @@ export class MdcTextField extends MdcComponent<MDCTextFieldFoundation> {
       getNativeInput: () => this.input_,
       isFocused: () => document.activeElement === this.input_,
       registerInputInteractionHandler: (evtType, handler) => this.input_.addEventListener(evtType, handler, applyPassive()),
-      deregisterInputInteractionHandler: (evtType, handler) => this.input_.removeEventListener(evtType, handler, applyPassive()),
+      deregisterInputInteractionHandler: (evtType, handler) => this.input_?.removeEventListener(evtType, handler, applyPassive()),
     };
   }
 
@@ -331,9 +393,9 @@ export class MdcTextField extends MdcComponent<MDCTextFieldFoundation> {
     this.value = value;
   }
 
-  async onFocus() {
-    await this.initialised;
+  onFocus() {
     this.foundation?.activateFocus();
+    this.emit('focus', {}, true);
   }
 
   onChange(evt: Event): void {
@@ -353,8 +415,16 @@ export class MdcTextField extends MdcComponent<MDCTextFieldFoundation> {
   blur() {
     this.input_.blur();
   }
+
+  onKeyup(e: KeyboardEvent) {
+    if (this.blurOnEnter && e.keyCode === 13) {
+      this.blur();
+    }
+    return true;
+  }
 }
 
+/** @hidden */
 export interface IMdcTextFieldElement extends IValidatedElement {
   au: {
     controller: {
@@ -371,6 +441,24 @@ function defineMdcTextFieldElementApis(element: HTMLElement) {
       },
       set(this: IMdcTextFieldElement, value: string) {
         this.au.controller.viewModel.value = value;
+      },
+      configurable: true
+    },
+    disabled: {
+      get(this: IMdcTextFieldElement) {
+        return this.au.controller.viewModel.disabled;
+      },
+      set(this: IMdcTextFieldElement, value: boolean) {
+        this.au.controller.viewModel.disabled = value;
+      },
+      configurable: true
+    },
+    readOnly: {
+      get(this: IMdcTextFieldElement) {
+        return this.au.controller.viewModel.readonly;
+      },
+      set(this: IMdcTextFieldElement, value: boolean) {
+        this.au.controller.viewModel.readonly = value;
       },
       configurable: true
     },

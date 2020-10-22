@@ -9,6 +9,9 @@ const ENTER = 13;
 const SPACE = 32;
 const LIST_ITEM_ACTION = 'mdclistitem:action';
 
+/**
+ * @selector mdc-list-item
+ */
 @inject(Element)
 @useView(PLATFORM.moduleName('./mdc-list-item.html'))
 @customElement(cssClasses.LIST_ITEM_CLASS)
@@ -45,46 +48,39 @@ export class MdcListItem {
 
   id = ++listItemId;
 
-  @bindable
-  role: string;
-
+  /** Disables the list item */
   @bindable.booleanAttr
   disabled: boolean;
 
+  /** Styles the row in an activated state */
   @bindable.booleanAttr
   activated: boolean;
 
+  /** Random data associated with the list item. Passed in events payload. */
   @bindable
   value: unknown;
 
-  @bindable
-  actionData: unknown;
-
+  /** Disables ripple effect */
   @bindable.booleanAttr
   disableRipple: boolean;
 
-  initialSyncWithDOM() {
-    if (this.role) {
-      this.root.setAttribute('role', this.role);
-    }
-  }
-
   onKeydown(evt: KeyboardEvent) {
     if ((evt.keyCode === ENTER || evt.keyCode === SPACE) && !this.disabled) {
-      this.root.dispatchEvent(new CustomEvent(LIST_ITEM_ACTION, { detail: { item: this, data: this.actionData }, bubbles: true }));
+      this.root.dispatchEvent(new CustomEvent(LIST_ITEM_ACTION, { detail: { item: this, data: this.value }, bubbles: true }));
     }
     return true;
   }
 
   onClick() {
     if (!this.disabled) {
-      this.root.dispatchEvent(new CustomEvent(LIST_ITEM_ACTION, { detail: { item: this, data: this.actionData }, bubbles: true }));
+      this.root.dispatchEvent(new CustomEvent(LIST_ITEM_ACTION, { detail: { item: this, data: this.value }, bubbles: true }));
     }
     return true;
   }
 
 }
 
+/** @hidden */
 export interface IMdcListItemElement extends HTMLElement {
   au: {
     controller: {
@@ -98,6 +94,7 @@ export interface IMdcListActionEventDetail {
   data: unknown;
 }
 
+/** @hidden */
 export interface IMdcListActionEvent extends Event {
   detail: IMdcListActionEventDetail;
 }

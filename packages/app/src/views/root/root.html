@@ -3,11 +3,13 @@
   <mdc-top-app-bar fixed class="demo-top-app-bar">
     <mdc-top-app-bar-row>
       <mdc-top-app-bar-section>
-        <button mdc-top-app-bar-nav-icon click.delegate="drawer.toggle()"><i class="material-icons">menu</i></button>
+        <button mdc-top-app-bar-nav-icon click.delegate="drawer.toggle()">
+          <mdc-icon>menu</mdc-icon>
+        </button>
         <mdc-top-app-bar-title>Aurelia MDC</mdc-top-app-bar-title>
       </mdc-top-app-bar-section>
       <mdc-top-app-bar-section align="end">
-        <span>v1.0.0-alpha.16</span>
+        <span>v1.1.3</span>
         <a mdc-top-app-bar-action-item href="https://github.com/aurelia-ui-toolkits/aurelia-mdc-web" alt="GitHub"
           target="_blank" rel="noopener">
           <i class="material-icons" aria-hidden="true" role="img">
@@ -23,7 +25,7 @@
       <mdc-drawer-content>
         <mdc-list activated wrap-focus mdclist:action.delegate="navigateTo($event.detail)" tabindex="0">
           <template repeat.for="m of navModels">
-            <mdc-list-item activated.bind="m.isActive" action-data.bind="m">
+            <mdc-list-item activated.bind="m.isActive" value.bind="m">
               ${m.title}
             </mdc-list-item>
             <mdc-list-divider if.bind="m.config.divider"></mdc-list-divider>

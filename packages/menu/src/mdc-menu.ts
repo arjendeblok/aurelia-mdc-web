@@ -268,7 +268,7 @@ export class MdcMenu extends MdcComponent<MDCMenuFoundation> {
       notifySelected: (evtData) => {
         const item = this.items[evtData.index];
         this.emit<IMdcMenuItemComponentEventDetail>(strings.SELECTED_EVENT,
-          { index: evtData.index, item, data: (item as IMdcListItemElement).au?.controller.viewModel.actionData });
+          { index: evtData.index, item, data: (item as IMdcListItemElement).au?.controller.viewModel.value });
       },
       getMenuItemCount: () => this.items.length,
       focusItemAtIndex: (index) => (this.items[index] as HTMLElement).focus(),
@@ -289,6 +289,7 @@ export interface IMdcMenuItemComponentEventDetail extends MDCMenuItemComponentEv
   data: unknown;
 }
 
+/** @hidden */
 export interface IMdcMenuItemComponentEvent extends Event {
   readonly detail: IMdcMenuItemComponentEventDetail;
 }

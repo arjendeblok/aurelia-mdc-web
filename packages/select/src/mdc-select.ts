@@ -42,7 +42,7 @@ export class MdcSelect extends MdcComponent<MDCSelectFoundationAurelia>{
   private selectAnchor: HTMLElement;
   private selectedText: HTMLElement;
 
-  private menuElement: Element;
+  private menuElement?: Element;
 
   @children('mdc-list-items')
   items: MdcListItem;
@@ -90,6 +90,9 @@ export class MdcSelect extends MdcComponent<MDCSelectFoundationAurelia>{
 
   @bindable
   anchorMargin: Partial<MDCMenuDistance>;
+
+  @bindable.booleanAttr
+  twoLine: boolean;
 
   private initialValue: unknown;
   get value(): unknown {
@@ -180,7 +183,7 @@ export class MdcSelect extends MdcComponent<MDCSelectFoundationAurelia>{
 
   private getSelectAdapterMethods() {
     return {
-      getSelectedMenuItem: () => this.menuElement.querySelector(strings.SELECTED_ITEM_SELECTOR),
+      getSelectedMenuItem: () => this.menuElement?.querySelector(strings.SELECTED_ITEM_SELECTOR) ?? null,
       getMenuItemAttr: (menuItem: Element, attr: string) => menuItem.getAttribute(attr),
       setSelectedText: (text: string) => {
         this.selectedText.textContent = text;
@@ -194,10 +197,10 @@ export class MdcSelect extends MdcComponent<MDCSelectFoundationAurelia>{
         this.selectAnchor.removeAttribute(attr);
       },
       addMenuClass: (className: string) => {
-        this.menuElement.classList.add(className);
+        this.menuElement?.classList.add(className);
       },
       removeMenuClass: (className: string) => {
-        this.menuElement.classList.remove(className);
+        this.menuElement?.classList.remove(className);
       },
       openMenu: () => { this.menu.open = true; },
       closeMenu: () => { this.menu.open = false; },
@@ -289,7 +292,11 @@ export class MdcSelect extends MdcComponent<MDCSelectFoundationAurelia>{
 
   handleBlur() {
     this.foundation?.handleBlur();
-    this.emit('blur', {}, true);
+    // if class is set it means the menu is open,
+    // do not emit blur since "conceptually" the element is still active
+    if (!this.root.classList.contains(cssClasses.FOCUSED)) {
+      this.emit('blur', {}, true);
+    }
   }
 
   handleClick(evt: MouseEvent) {
@@ -312,6 +319,9 @@ export class MdcSelect extends MdcComponent<MDCSelectFoundationAurelia>{
 
   handleMenuClosed() {
     this.foundation?.handleMenuClosed();
+    if (!this.root.classList.contains(cssClasses.FOCUSED)) {
+      this.emit('blur', {}, true);
+    }
   }
 
   handleItemsChanged() {
